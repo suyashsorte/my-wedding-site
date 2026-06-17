@@ -342,7 +342,7 @@
       font-family: var(--font-script);
       font-size: clamp(1rem, 3.5vw, 1.6rem);
       color: var(--color-text-muted);
-      margin-top: var(--space-xs);
+      margin-top: var(--space-md);
     }
 
     /* Ornamental divider: gold line · diamond · gold line */
@@ -502,19 +502,24 @@
       box-shadow: 0 10px 24px -12px rgba(230, 165, 50, 0.6);
     }
 
-    /* Masonry via CSS multi-column — each photo keeps its NATURAL aspect
-       ratio (no cropping); columns auto-balance. 1 / 2 / 3 by width. */
-    .gallery__grid { columns: 1; column-gap: var(--space-sm); }
-    @media (min-width: 600px) { .gallery__grid { columns: 2; } }
-    @media (min-width: 960px) { .gallery__grid { columns: 3; } }
+    /* Masonry: JS distributes cards into equal-width columns (shortest column
+       first) so portraits & landscapes pack evenly with no ragged gaps. Each
+       photo keeps its NATURAL aspect ratio (no cropping). 1 / 2 / 3 columns. */
+    .gallery__grid--ready { display: flex; align-items: flex-start; gap: var(--space-sm); transition: opacity 0.25s var(--ease); }
+    .gallery__col {
+      flex: 1 1 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
 
-    /* Card — image fills the width at its own height, no border, slight rounding */
+    /* Card — image fills the column width at its own height, slight rounding */
     .gallery__card {
       display: block;
       width: 100%;
       position: relative;
-      break-inside: avoid;
-      margin: 0 0 var(--space-sm);
+      margin: 0;
       padding: 0;
       border: 0;
       border-radius: 10px;
@@ -1057,7 +1062,7 @@
             <div class="timeline__body">
               <h3 class="timeline__name">Haldi</h3>
               <p class="timeline__meta">December 23, 2025 · 9:00 PM</p>
-              <p class="timeline__desc">A radiant morning ritual where turmeric paste is smoothed over the bride and groom — a blessing for glowing skin, good fortune, and protection in the days ahead.</p>
+              <p class="timeline__desc">A radiant ritual where turmeric paste is smoothed over the bride and groom, a blessing for glowing skin, good fortune, and protection in the days ahead.</p>
             </div>
           </article>
         </li>
@@ -1069,7 +1074,7 @@
             <div class="timeline__body">
               <h3 class="timeline__name">Baraat</h3>
               <p class="timeline__meta">December 24, 2025 · 11:00 AM</p>
-              <p class="timeline__desc">The groom's joyous arrival — dhol drums, dancing cousins, and a procession that turns the whole street into a celebration on the way to the mandap.</p>
+              <p class="timeline__desc">The groom's joyous arrival - dhol drums, dancing cousins, and a procession that turns the whole street into a celebration on the way to the mandap.</p>
             </div>
           </article>
         </li>
@@ -1081,7 +1086,7 @@
             <div class="timeline__body">
               <h3 class="timeline__name">Shaadi</h3>
               <p class="timeline__meta">December 24, 2025 · 4:30 PM</p>
-              <p class="timeline__desc">Beneath the flower-laden mandap, the couple circles the sacred fire and exchanges seven vows — the sacred, beating heart of the wedding.</p>
+              <p class="timeline__desc">Beneath the flower-laden mandap, the couple circles the sacred fire and exchanges seven vows - the sacred, beating heart of the wedding.</p>
             </div>
           </article>
         </li>
@@ -1126,213 +1131,273 @@
 
       <!-- Masonry grid -->
       <div class="gallery__grid" id="galleryGrid">
-        <!-- images/web/mehendi/ -->
-        <button class="gallery__card landscape feat" data-category="mehendi" data-label="Mehendi" aria-label="Open photo: Family and friends gathered at the Mehendi celebration">
+        <!-- mehendi -->
+        <button class="gallery__card" data-category="mehendi" data-label="Mehendi" aria-label="Open photo: Family and friends gathered at the Mehendi celebration">
           <img src="images/web/mehendi/1.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="Family and friends gathered at the Mehendi celebration" />
           <span class="gallery__overlay"><span class="gallery__tag">Mehendi</span></span>
         </button>
-        <button class="gallery__card landscape" data-category="mehendi" data-label="Mehendi" aria-label="Open photo: The bride in traditional attire at her Mehendi">
+        <button class="gallery__card" data-category="mehendi" data-label="Mehendi" aria-label="Open photo: The bride in traditional attire at her Mehendi">
           <img src="images/web/mehendi/2.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The bride in traditional attire at her Mehendi" />
           <span class="gallery__overlay"><span class="gallery__tag">Mehendi</span></span>
         </button>
-        <button class="gallery__card landscape" data-category="mehendi" data-label="Mehendi" aria-label="Open photo: Intricate henna being applied to the bride&#x27;s hands">
+        <button class="gallery__card" data-category="mehendi" data-label="Mehendi" aria-label="Open photo: Intricate henna being applied to the bride&#x27;s hands">
           <img src="images/web/mehendi/3.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="Intricate henna being applied to the bride&#x27;s hands" />
           <span class="gallery__overlay"><span class="gallery__tag">Mehendi</span></span>
         </button>
-        <button class="gallery__card landscape" data-category="mehendi" data-label="Mehendi" aria-label="Open photo: The bride with her friends at the Mehendi ceremony">
-          <img src="images/web/mehendi/4.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The bride with her friends at the Mehendi ceremony" />
+        <button class="gallery__card" data-category="mehendi" data-label="Mehendi" aria-label="Open photo: A moment from the Mehendi ceremony">
+          <img src="images/web/mehendi/3B5A8653.JPG" width="4640" height="6960" loading="lazy" decoding="async" alt="A moment from the Mehendi ceremony" />
           <span class="gallery__overlay"><span class="gallery__tag">Mehendi</span></span>
         </button>
-        <button class="gallery__card landscape" data-category="mehendi" data-label="Mehendi" aria-label="Open photo: Family in festive colour at the Mehendi">
+        <button class="gallery__card" data-category="mehendi" data-label="Mehendi" aria-label="Open photo: A moment from the Mehendi ceremony">
+          <img src="images/web/mehendi/3B5A8655.JPG" width="6960" height="4640" loading="lazy" decoding="async" alt="A moment from the Mehendi ceremony" />
+          <span class="gallery__overlay"><span class="gallery__tag">Mehendi</span></span>
+        </button>
+        <button class="gallery__card" data-category="mehendi" data-label="Mehendi" aria-label="Open photo: Family in festive colour at the Mehendi">
           <img src="images/web/mehendi/5.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="Family in festive colour at the Mehendi" />
           <span class="gallery__overlay"><span class="gallery__tag">Mehendi</span></span>
         </button>
+        <button class="gallery__card" data-category="mehendi" data-label="Mehendi" aria-label="Open photo: A moment from the Mehendi ceremony">
+          <img src="images/web/mehendi/_DSC7286.JPG" width="4000" height="6000" loading="lazy" decoding="async" alt="A moment from the Mehendi ceremony" />
+          <span class="gallery__overlay"><span class="gallery__tag">Mehendi</span></span>
+        </button>
+        <button class="gallery__card" data-category="mehendi" data-label="Mehendi" aria-label="Open photo: A moment from the Mehendi ceremony">
+          <img src="images/web/mehendi/_DSC7376.JPG" width="4000" height="6000" loading="lazy" decoding="async" alt="A moment from the Mehendi ceremony" />
+          <span class="gallery__overlay"><span class="gallery__tag">Mehendi</span></span>
+        </button>
+        <button class="gallery__card" data-category="mehendi" data-label="Mehendi" aria-label="Open photo: A moment from the Mehendi ceremony">
+          <img src="images/web/mehendi/_DSC7384.JPG" width="4000" height="6000" loading="lazy" decoding="async" alt="A moment from the Mehendi ceremony" />
+          <span class="gallery__overlay"><span class="gallery__tag">Mehendi</span></span>
+        </button>
+        <button class="gallery__card" data-category="mehendi" data-label="Mehendi" aria-label="Open photo: A moment from the Mehendi ceremony">
+          <img src="images/web/mehendi/DSCF0063.JPG" width="6240" height="4160" loading="lazy" decoding="async" alt="A moment from the Mehendi ceremony" />
+          <span class="gallery__overlay"><span class="gallery__tag">Mehendi</span></span>
+        </button>
 
-        <!-- images/web/Engagement/ -->
-        <button class="gallery__card landscape feat" data-category="engagement" data-label="Engagement" aria-label="Open photo: Suyash and Sneha on stage at their engagement">
-          <img src="images/web/Engagement/1.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="Suyash and Sneha on stage at their engagement" />
+        <!-- Engagement -->
+        <button class="gallery__card" data-category="engagement" data-label="Engagement" aria-label="Open photo: A moment from the engagement">
+          <img src="images/web/Engagement/1.jpeg" width="765" height="1063" loading="lazy" decoding="async" alt="A moment from the engagement" />
           <span class="gallery__overlay"><span class="gallery__tag">Engagement</span></span>
         </button>
-        <button class="gallery__card portrait" data-category="engagement" data-label="Engagement" aria-label="Open photo: Suyash and Sneha beside the floral &#x27;S&amp;S&#x27; installation">
-          <img src="images/web/Engagement/5.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="Suyash and Sneha beside the floral &#x27;S&amp;S&#x27; installation" />
-          <span class="gallery__overlay"><span class="gallery__tag">Engagement</span></span>
-        </button>
-        <button class="gallery__card landscape" data-category="engagement" data-label="Engagement" aria-label="Open photo: The couple with a bouquet during the engagement">
+        <button class="gallery__card" data-category="engagement" data-label="Engagement" aria-label="Open photo: The couple with a bouquet during the engagement">
           <img src="images/web/Engagement/2.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The couple with a bouquet during the engagement" />
           <span class="gallery__overlay"><span class="gallery__tag">Engagement</span></span>
         </button>
-        <button class="gallery__card portrait" data-category="engagement" data-label="Engagement" aria-label="Open photo: Floral engagement signage reading &#x27;S &amp; S&#x27;">
-          <img src="images/web/Engagement/6.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="Floral engagement signage reading &#x27;S &amp; S&#x27;" />
-          <span class="gallery__overlay"><span class="gallery__tag">Engagement</span></span>
-        </button>
-        <button class="gallery__card landscape" data-category="engagement" data-label="Engagement" aria-label="Open photo: The ring ceremony during the engagement">
+        <button class="gallery__card" data-category="engagement" data-label="Engagement" aria-label="Open photo: The ring ceremony during the engagement">
           <img src="images/web/Engagement/3.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The ring ceremony during the engagement" />
           <span class="gallery__overlay"><span class="gallery__tag">Engagement</span></span>
         </button>
-        <button class="gallery__card portrait" data-category="engagement" data-label="Engagement" aria-label="Open photo: A candid moment with guests at the engagement">
-          <img src="images/web/Engagement/9.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="A candid moment with guests at the engagement" />
+        <button class="gallery__card" data-category="engagement" data-label="Engagement" aria-label="Open photo: A moment from the engagement">
+          <img src="images/web/Engagement/3B5A9293.JPG" width="6960" height="4640" loading="lazy" decoding="async" alt="A moment from the engagement" />
           <span class="gallery__overlay"><span class="gallery__tag">Engagement</span></span>
         </button>
-        <button class="gallery__card landscape" data-category="engagement" data-label="Engagement" aria-label="Open photo: The couple with family at the engagement">
+        <button class="gallery__card" data-category="engagement" data-label="Engagement" aria-label="Open photo: The couple with family at the engagement">
           <img src="images/web/Engagement/4.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The couple with family at the engagement" />
           <span class="gallery__overlay"><span class="gallery__tag">Engagement</span></span>
         </button>
-        <button class="gallery__card landscape" data-category="engagement" data-label="Engagement" aria-label="Open photo: Family group photograph at the engagement">
+        <button class="gallery__card" data-category="engagement" data-label="Engagement" aria-label="Open photo: Suyash and Sneha beside the floral &#x27;S&amp;S&#x27; installation">
+          <img src="images/web/Engagement/5.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="Suyash and Sneha beside the floral &#x27;S&amp;S&#x27; installation" />
+          <span class="gallery__overlay"><span class="gallery__tag">Engagement</span></span>
+        </button>
+        <button class="gallery__card" data-category="engagement" data-label="Engagement" aria-label="Open photo: Floral engagement signage reading &#x27;S &amp; S&#x27;">
+          <img src="images/web/Engagement/6.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="Floral engagement signage reading &#x27;S &amp; S&#x27;" />
+          <span class="gallery__overlay"><span class="gallery__tag">Engagement</span></span>
+        </button>
+        <button class="gallery__card" data-category="engagement" data-label="Engagement" aria-label="Open photo: Family group photograph at the engagement">
           <img src="images/web/Engagement/7.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="Family group photograph at the engagement" />
           <span class="gallery__overlay"><span class="gallery__tag">Engagement</span></span>
         </button>
-        <button class="gallery__card landscape" data-category="engagement" data-label="Engagement" aria-label="Open photo: The couple in the decorated engagement venue">
+        <button class="gallery__card" data-category="engagement" data-label="Engagement" aria-label="Open photo: The couple in the decorated engagement venue">
           <img src="images/web/Engagement/8.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The couple in the decorated engagement venue" />
           <span class="gallery__overlay"><span class="gallery__tag">Engagement</span></span>
         </button>
+        <button class="gallery__card" data-category="engagement" data-label="Engagement" aria-label="Open photo: A candid moment with guests at the engagement">
+          <img src="images/web/Engagement/9.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="A candid moment with guests at the engagement" />
+          <span class="gallery__overlay"><span class="gallery__tag">Engagement</span></span>
+        </button>
+        <button class="gallery__card" data-category="engagement" data-label="Engagement" aria-label="Open photo: A moment from the engagement">
+          <img src="images/web/Engagement/_DSC5480.JPG" width="4672" height="7008" loading="lazy" decoding="async" alt="A moment from the engagement" />
+          <span class="gallery__overlay"><span class="gallery__tag">Engagement</span></span>
+        </button>
+        <button class="gallery__card" data-category="engagement" data-label="Engagement" aria-label="Open photo: A moment from the engagement">
+          <img src="images/web/Engagement/_DSC5586.JPG" width="4672" height="7008" loading="lazy" decoding="async" alt="A moment from the engagement" />
+          <span class="gallery__overlay"><span class="gallery__tag">Engagement</span></span>
+        </button>
+        <button class="gallery__card" data-category="engagement" data-label="Engagement" aria-label="Open photo: A moment from the engagement">
+          <img src="images/web/Engagement/_DSC7764.JPG" width="6000" height="4000" loading="lazy" decoding="async" alt="A moment from the engagement" />
+          <span class="gallery__overlay"><span class="gallery__tag">Engagement</span></span>
+        </button>
+        <button class="gallery__card" data-category="engagement" data-label="Engagement" aria-label="Open photo: A moment from the engagement">
+          <img src="images/web/Engagement/_DSC8502.JPG" width="4000" height="6000" loading="lazy" decoding="async" alt="A moment from the engagement" />
+          <span class="gallery__overlay"><span class="gallery__tag">Engagement</span></span>
+        </button>
+        <button class="gallery__card" data-category="engagement" data-label="Engagement" aria-label="Open photo: A moment from the engagement">
+          <img src="images/web/Engagement/_DSC8505.JPG" width="4000" height="6000" loading="lazy" decoding="async" alt="A moment from the engagement" />
+          <span class="gallery__overlay"><span class="gallery__tag">Engagement</span></span>
+        </button>
+        <button class="gallery__card" data-category="engagement" data-label="Engagement" aria-label="Open photo: A moment from the engagement">
+          <img src="images/web/Engagement/DSCF0129.JPG" width="6240" height="4160" loading="lazy" decoding="async" alt="A moment from the engagement" />
+          <span class="gallery__overlay"><span class="gallery__tag">Engagement</span></span>
+        </button>
+        <button class="gallery__card" data-category="engagement" data-label="Engagement" aria-label="Open photo: A moment from the engagement">
+          <img src="images/web/Engagement/DSCF0587.JPG" width="6240" height="4160" loading="lazy" decoding="async" alt="A moment from the engagement" />
+          <span class="gallery__overlay"><span class="gallery__tag">Engagement</span></span>
+        </button>
 
-        <!-- images/web/haldi/ -->
-        <button class="gallery__card landscape" data-category="haldi" data-label="Haldi" aria-label="Open photo: The bride during the Haldi ceremony">
+        <!-- haldi -->
+        <button class="gallery__card" data-category="haldi" data-label="Haldi" aria-label="Open photo: The bride during the Haldi ceremony">
           <img src="images/web/haldi/1.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The bride during the Haldi ceremony" />
           <span class="gallery__overlay"><span class="gallery__tag">Haldi</span></span>
         </button>
-        <button class="gallery__card portrait" data-category="haldi" data-label="Haldi" aria-label="Open photo: Turmeric being applied to the bride at Haldi">
+        <button class="gallery__card" data-category="haldi" data-label="Haldi" aria-label="Open photo: Turmeric being applied to the bride at Haldi">
           <img src="images/web/haldi/2.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="Turmeric being applied to the bride at Haldi" />
           <span class="gallery__overlay"><span class="gallery__tag">Haldi</span></span>
         </button>
-        <button class="gallery__card landscape feat" data-category="haldi" data-label="Haldi" aria-label="Open photo: The Haldi ritual with family dressed in yellow">
+        <button class="gallery__card" data-category="haldi" data-label="Haldi" aria-label="Open photo: The Haldi ritual with family dressed in yellow">
           <img src="images/web/haldi/3.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The Haldi ritual with family dressed in yellow" />
           <span class="gallery__overlay"><span class="gallery__tag">Haldi</span></span>
         </button>
-        <button class="gallery__card landscape" data-category="haldi" data-label="Haldi" aria-label="Open photo: Family celebrating during the Haldi ceremony">
+        <button class="gallery__card" data-category="haldi" data-label="Haldi" aria-label="Open photo: Family celebrating during the Haldi ceremony">
           <img src="images/web/haldi/4.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="Family celebrating during the Haldi ceremony" />
           <span class="gallery__overlay"><span class="gallery__tag">Haldi</span></span>
         </button>
-        <button class="gallery__card landscape" data-category="haldi" data-label="Haldi" aria-label="Open photo: The couple during the Haldi ceremony">
+        <button class="gallery__card" data-category="haldi" data-label="Haldi" aria-label="Open photo: The couple during the Haldi ceremony">
           <img src="images/web/haldi/5.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The couple during the Haldi ceremony" />
           <span class="gallery__overlay"><span class="gallery__tag">Haldi</span></span>
         </button>
-        <button class="gallery__card landscape" data-category="haldi" data-label="Haldi" aria-label="Open photo: A large family gathering at the Haldi">
+        <button class="gallery__card" data-category="haldi" data-label="Haldi" aria-label="Open photo: A large family gathering at the Haldi">
           <img src="images/web/haldi/6.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="A large family gathering at the Haldi" />
           <span class="gallery__overlay"><span class="gallery__tag">Haldi</span></span>
         </button>
+        <button class="gallery__card" data-category="haldi" data-label="Haldi" aria-label="Open photo: A moment from the Haldi ceremony">
+          <img src="images/web/haldi/_DSC8083.JPG" width="4672" height="7008" loading="lazy" decoding="async" alt="A moment from the Haldi ceremony" />
+          <span class="gallery__overlay"><span class="gallery__tag">Haldi</span></span>
+        </button>
 
-        <!-- images/web/wedding/ -->
-        <button class="gallery__card landscape feat" data-category="wedding" data-label="Wedding" aria-label="Open photo: The Baraat procession arriving at the venue">
-          <img src="images/web/wedding/2.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The Baraat procession arriving at the venue" />
-          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
-        </button>
-        <button class="gallery__card portrait" data-category="wedding" data-label="Wedding" aria-label="Open photo: The groom arriving on horseback for the Baraat">
-          <img src="images/web/wedding/3.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="The groom arriving on horseback for the Baraat" />
-          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
-        </button>
-        <button class="gallery__card landscape feat" data-category="wedding" data-label="Wedding" aria-label="Open photo: The couple exchanging garlands during the Jaimala">
-          <img src="images/web/wedding/12.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The couple exchanging garlands during the Jaimala" />
-          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
-        </button>
-        <button class="gallery__card portrait" data-category="wedding" data-label="Wedding" aria-label="Open photo: The groom in a red turban before the wedding">
+        <!-- wedding -->
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: The groom in a red turban before the wedding">
           <img src="images/web/wedding/1.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="The groom in a red turban before the wedding" />
           <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
         </button>
-        <button class="gallery__card landscape" data-category="wedding" data-label="Wedding" aria-label="Open photo: The garland exchange during the wedding ceremony">
-          <img src="images/web/wedding/13.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The garland exchange during the wedding ceremony" />
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: The Baraat procession arriving at the venue">
+          <img src="images/web/wedding/2.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The Baraat procession arriving at the venue" />
           <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
         </button>
-        <button class="gallery__card portrait" data-category="wedding" data-label="Wedding" aria-label="Open photo: Suyash and Sneha together on their wedding day">
-          <img src="images/web/wedding/11.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="Suyash and Sneha together on their wedding day" />
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: The groom arriving on horseback for the Baraat">
+          <img src="images/web/wedding/3.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="The groom arriving on horseback for the Baraat" />
           <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
         </button>
-        <button class="gallery__card landscape" data-category="wedding" data-label="Wedding" aria-label="Open photo: The couple taking the pheras around the sacred fire">
-          <img src="images/web/wedding/21.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The couple taking the pheras around the sacred fire" />
-          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
-        </button>
-        <button class="gallery__card portrait" data-category="wedding" data-label="Wedding" aria-label="Open photo: Portrait of the bride on her wedding day">
-          <img src="images/web/wedding/22.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="Portrait of the bride on her wedding day" />
-          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
-        </button>
-        <button class="gallery__card landscape" data-category="wedding" data-label="Wedding" aria-label="Open photo: The groom with his family at the wedding">
-          <img src="images/web/wedding/16.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The groom with his family at the wedding" />
-          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
-        </button>
-        <button class="gallery__card portrait" data-category="wedding" data-label="Wedding" aria-label="Open photo: Portrait of the groom in his wedding sherwani">
-          <img src="images/web/wedding/6.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="Portrait of the groom in his wedding sherwani" />
-          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
-        </button>
-        <button class="gallery__card landscape" data-category="wedding" data-label="Wedding" aria-label="Open photo: Ritual offerings during the wedding ceremony">
-          <img src="images/web/wedding/19.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="Ritual offerings during the wedding ceremony" />
-          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
-        </button>
-        <button class="gallery__card portrait" data-category="wedding" data-label="Wedding" aria-label="Open photo: Suyash and Sneha in their wedding finery">
-          <img src="images/web/wedding/17.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="Suyash and Sneha in their wedding finery" />
-          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
-        </button>
-        <button class="gallery__card landscape" data-category="wedding" data-label="Wedding" aria-label="Open photo: Suyash and Sneha on the wedding stage">
-          <img src="images/web/wedding/14.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="Suyash and Sneha on the wedding stage" />
-          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
-        </button>
-        <button class="gallery__card portrait" data-category="wedding" data-label="Wedding" aria-label="Open photo: Sacred rituals at the mandap">
-          <img src="images/web/wedding/18.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="Sacred rituals at the mandap" />
-          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
-        </button>
-        <button class="gallery__card landscape" data-category="wedding" data-label="Wedding" aria-label="Open photo: The Baraat procession making its way to the venue">
-          <img src="images/web/wedding/5.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The Baraat procession making its way to the venue" />
-          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
-        </button>
-        <button class="gallery__card portrait" data-category="wedding" data-label="Wedding" aria-label="Open photo: The groom beneath a ceremonial umbrella during the Baraat">
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: The groom beneath a ceremonial umbrella during the Baraat">
           <img src="images/web/wedding/4.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="The groom beneath a ceremonial umbrella during the Baraat" />
           <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
         </button>
-        <button class="gallery__card landscape" data-category="wedding" data-label="Wedding" aria-label="Open photo: The families seated together during the ceremony">
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: The Baraat procession making its way to the venue">
+          <img src="images/web/wedding/5.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The Baraat procession making its way to the venue" />
+          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
+        </button>
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: Portrait of the groom in his wedding sherwani">
+          <img src="images/web/wedding/6.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="Portrait of the groom in his wedding sherwani" />
+          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
+        </button>
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: The families seated together during the ceremony">
           <img src="images/web/wedding/7.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The families seated together during the ceremony" />
           <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
         </button>
-        <button class="gallery__card portrait" data-category="wedding" data-label="Wedding" aria-label="Open photo: The groom on horseback during the Baraat">
-          <img src="images/web/wedding/_DSC9000.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="The groom on horseback during the Baraat" />
-          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
-        </button>
-        <button class="gallery__card landscape" data-category="wedding" data-label="Wedding" aria-label="Open photo: A joyful moment during the wedding">
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: A joyful moment during the wedding">
           <img src="images/web/wedding/8.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="A joyful moment during the wedding" />
           <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
         </button>
-        <button class="gallery__card landscape" data-category="wedding" data-label="Wedding" aria-label="Open photo: A candid celebration during the wedding">
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: A candid celebration during the wedding">
           <img src="images/web/wedding/9.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="A candid celebration during the wedding" />
           <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
         </button>
-        <button class="gallery__card landscape" data-category="wedding" data-label="Wedding" aria-label="Open photo: Portrait of the groom in his wedding turban">
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: Portrait of the groom in his wedding turban">
           <img src="images/web/wedding/10.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="Portrait of the groom in his wedding turban" />
           <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
         </button>
-        <button class="gallery__card landscape" data-category="wedding" data-label="Wedding" aria-label="Open photo: The groom&#x27;s family gathered at the wedding">
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: Suyash and Sneha together on their wedding day">
+          <img src="images/web/wedding/11.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="Suyash and Sneha together on their wedding day" />
+          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
+        </button>
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: The couple exchanging garlands during the Jaimala">
+          <img src="images/web/wedding/12.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The couple exchanging garlands during the Jaimala" />
+          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
+        </button>
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: The garland exchange during the wedding ceremony">
+          <img src="images/web/wedding/13.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The garland exchange during the wedding ceremony" />
+          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
+        </button>
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: Suyash and Sneha on the wedding stage">
+          <img src="images/web/wedding/14.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="Suyash and Sneha on the wedding stage" />
+          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
+        </button>
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: The groom&#x27;s family gathered at the wedding">
           <img src="images/web/wedding/15.jpg" width="1600" height="1424" loading="lazy" decoding="async" alt="The groom&#x27;s family gathered at the wedding" />
           <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
         </button>
-        <button class="gallery__card landscape" data-category="wedding" data-label="Wedding" aria-label="Open photo: Wedding rituals performed with the families">
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: The groom with his family at the wedding">
+          <img src="images/web/wedding/16.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The groom with his family at the wedding" />
+          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
+        </button>
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: Suyash and Sneha in their wedding finery">
+          <img src="images/web/wedding/17.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="Suyash and Sneha in their wedding finery" />
+          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
+        </button>
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: Sacred rituals at the mandap">
+          <img src="images/web/wedding/18.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="Sacred rituals at the mandap" />
+          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
+        </button>
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: Ritual offerings during the wedding ceremony">
+          <img src="images/web/wedding/19.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="Ritual offerings during the wedding ceremony" />
+          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
+        </button>
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: Wedding rituals performed with the families">
           <img src="images/web/wedding/20.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="Wedding rituals performed with the families" />
           <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
         </button>
-        <button class="gallery__card landscape" data-category="wedding" data-label="Wedding" aria-label="Open photo: Guests and elders celebrating at the wedding">
-          <img src="images/web/wedding/_DSC9389.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="Guests and elders celebrating at the wedding" />
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: The couple taking the pheras around the sacred fire">
+          <img src="images/web/wedding/21.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The couple taking the pheras around the sacred fire" />
+          <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
+        </button>
+        <button class="gallery__card" data-category="wedding" data-label="Wedding" aria-label="Open photo: Portrait of the bride on her wedding day">
+          <img src="images/web/wedding/22.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="Portrait of the bride on her wedding day" />
           <span class="gallery__overlay"><span class="gallery__tag">Wedding</span></span>
         </button>
 
-        <!-- images/web/reception/ -->
-        <button class="gallery__card landscape" data-category="reception" data-label="Reception" aria-label="Open photo: The newlyweds during their reception">
-          <img src="images/web/reception/2.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The newlyweds during their reception" />
-          <span class="gallery__overlay"><span class="gallery__tag">Reception</span></span>
-        </button>
-        <button class="gallery__card portrait" data-category="reception" data-label="Reception" aria-label="Open photo: Suyash and Sneha on the reception stage">
+        <!-- reception -->
+        <button class="gallery__card" data-category="reception" data-label="Reception" aria-label="Open photo: Suyash and Sneha on the reception stage">
           <img src="images/web/reception/1.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="Suyash and Sneha on the reception stage" />
           <span class="gallery__overlay"><span class="gallery__tag">Reception</span></span>
         </button>
-        <button class="gallery__card landscape feat" data-category="reception" data-label="Reception" aria-label="Open photo: The couple&#x27;s grand entrance amid stage fog">
-          <img src="images/web/reception/5.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The couple&#x27;s grand entrance amid stage fog" />
+        <button class="gallery__card" data-category="reception" data-label="Reception" aria-label="Open photo: The newlyweds during their reception">
+          <img src="images/web/reception/2.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The newlyweds during their reception" />
           <span class="gallery__overlay"><span class="gallery__tag">Reception</span></span>
         </button>
-        <button class="gallery__card portrait" data-category="reception" data-label="Reception" aria-label="Open photo: The couple at their wedding reception">
+        <button class="gallery__card" data-category="reception" data-label="Reception" aria-label="Open photo: The couple at their wedding reception">
           <img src="images/web/reception/3.jpg" width="1067" height="1600" loading="lazy" decoding="async" alt="The couple at their wedding reception" />
           <span class="gallery__overlay"><span class="gallery__tag">Reception</span></span>
         </button>
-        <button class="gallery__card landscape" data-category="reception" data-label="Reception" aria-label="Open photo: The newlyweds beneath a floral arch at the reception">
+        <button class="gallery__card" data-category="reception" data-label="Reception" aria-label="Open photo: The couple&#x27;s grand entrance amid stage fog">
+          <img src="images/web/reception/5.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The couple&#x27;s grand entrance amid stage fog" />
+          <span class="gallery__overlay"><span class="gallery__tag">Reception</span></span>
+        </button>
+        <button class="gallery__card" data-category="reception" data-label="Reception" aria-label="Open photo: The newlyweds beneath a floral arch at the reception">
           <img src="images/web/reception/7.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="The newlyweds beneath a floral arch at the reception" />
           <span class="gallery__overlay"><span class="gallery__tag">Reception</span></span>
         </button>
-        <button class="gallery__card landscape" data-category="reception" data-label="Reception" aria-label="Open photo: Family together on stage at the reception">
+        <button class="gallery__card" data-category="reception" data-label="Reception" aria-label="Open photo: Family together on stage at the reception">
           <img src="images/web/reception/8.jpg" width="1600" height="1067" loading="lazy" decoding="async" alt="Family together on stage at the reception" />
+          <span class="gallery__overlay"><span class="gallery__tag">Reception</span></span>
+        </button>
+        <button class="gallery__card" data-category="reception" data-label="Reception" aria-label="Open photo: A moment from the reception">
+          <img src="images/web/reception/DSC08143.JPG" width="4672" height="7008" loading="lazy" decoding="async" alt="A moment from the reception" />
+          <span class="gallery__overlay"><span class="gallery__tag">Reception</span></span>
+        </button>
+        <button class="gallery__card" data-category="reception" data-label="Reception" aria-label="Open photo: A moment from the reception">
+          <img src="images/web/reception/DSC08277.JPG" width="4672" height="7008" loading="lazy" decoding="async" alt="A moment from the reception" />
+          <span class="gallery__overlay"><span class="gallery__tag">Reception</span></span>
+        </button>
+        <button class="gallery__card" data-category="reception" data-label="Reception" aria-label="Open photo: A moment from the reception">
+          <img src="images/web/reception/DSC08452.JPG" width="4672" height="7008" loading="lazy" decoding="async" alt="A moment from the reception" />
           <span class="gallery__overlay"><span class="gallery__tag">Reception</span></span>
         </button>
       </div>
@@ -1367,7 +1432,7 @@
 
       <h2 class="site-footer__names">Suyash <span class="amp">&amp;</span> Sneha</h2>
       <p class="site-footer__date">24<sup>th</sup> December 2025 &middot; Nagpur, Maharashtra</p>
-      <p class="site-footer__thanks"><em>Thank you for being part of our forever — for the blessings, the laughter, and every photograph yet to be taken.</em></p>
+      <p class="site-footer__thanks"><em>Thank you for being part of our forever - for the blessings, the laughter, and every photograph yet to be taken.</em></p>
 
       <p class="site-footer__fineprint">Made with love in the Orange City &middot; 2025</p>
     </div>
@@ -1461,26 +1526,58 @@
       if (!grid) return;
       var cards = Array.prototype.slice.call(grid.querySelectorAll('.gallery__card'));
       var filters = Array.prototype.slice.call(document.querySelectorAll('.gallery__filter'));
+      var currentCat = 'all';
 
-      /* ---- Filtering: smooth opacity/scale, then collapse ---- */
+      /* ---- Masonry: deal the active cards into the shortest column so
+              portraits & landscapes pack evenly with no ragged gaps ---- */
+      function colCount() {
+        var w = window.innerWidth;
+        return w >= 960 ? 3 : (w >= 600 ? 2 : 1);
+      }
+      function activeCards() {
+        return cards.filter(function (c) {
+          return currentCat === 'all' || c.dataset.category === currentCat;
+        });
+      }
+      function layout() {
+        var n = colCount();
+        var cols = [], h = [];
+        for (var i = 0; i < n; i++) {
+          var col = document.createElement('div');
+          col.className = 'gallery__col';
+          cols.push(col); h.push(0);
+        }
+        activeCards().forEach(function (card) {
+          var img = card.querySelector('img');
+          var iw = +img.getAttribute('width') || 3, ih = +img.getAttribute('height') || 2;
+          var t = 0; // shortest column (ties -> leftmost, keeps reading order tidy)
+          for (var i = 1; i < n; i++) if (h[i] < h[t] - 1e-4) t = i;
+          cols[t].appendChild(card);
+          h[t] += ih / iw; // relative height (all columns are equal width)
+        });
+        grid.textContent = '';
+        cols.forEach(function (c) { grid.appendChild(c); });
+        grid.classList.add('gallery__grid--ready');
+      }
+      // relayout only when the column count changes (cheap on resize)
+      var lastN = -1, rafId;
+      function maybeLayout() { var n = colCount(); if (n !== lastN) { lastN = n; layout(); } }
+      window.addEventListener('resize', function () {
+        cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(maybeLayout);
+      }, { passive: true });
+      maybeLayout();
+
+      /* ---- Filtering ---- */
       filters.forEach(function (btn) {
         btn.addEventListener('click', function () {
           filters.forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
           btn.setAttribute('aria-pressed', 'true');
-
-          var cat = btn.dataset.filter;
-          cards.forEach(function (card) {
-            var match = cat === 'all' || card.dataset.category === cat;
-            if (match) {
-              card.style.display = '';
-              // next frame so the transition runs from the hidden state
-              requestAnimationFrame(function () { card.classList.remove('card--hidden'); });
-            } else {
-              card.classList.add('card--hidden');
-              setTimeout(function () {
-                if (card.classList.contains('card--hidden')) card.style.display = 'none';
-              }, 450);
-            }
+          currentCat = btn.dataset.filter;
+          grid.style.opacity = 0;
+          requestAnimationFrame(function () {
+            layout();
+            requestAnimationFrame(function () { grid.style.opacity = ''; });
           });
         });
       });
@@ -1498,9 +1595,6 @@
       var index = 0;
       var lastFocused = null;
 
-      function visibleCards() {
-        return cards.filter(function (c) { return c.style.display !== 'none'; });
-      }
       function render() {
         var card = visible[index];
         var img = card.querySelector('img');
@@ -1510,7 +1604,7 @@
         lbCount.textContent = (index + 1) + ' / ' + visible.length;
       }
       function open(card) {
-        visible = visibleCards();
+        visible = activeCards();
         index = visible.indexOf(card);
         if (index < 0) index = 0;
         render();
