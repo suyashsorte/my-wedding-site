@@ -1400,6 +1400,18 @@
           <img src="images/web/reception/DSC08452.JPG" width="4672" height="7008" loading="lazy" decoding="async" alt="A moment from the reception" />
           <span class="gallery__overlay"><span class="gallery__tag">Reception</span></span>
         </button>
+        <button class="gallery__card" data-category="reception" data-label="Reception" aria-label="Open photo: A moment from the reception">
+          <img src="images/web/reception/DSC08710.jpg" width="1600" height="1066" loading="lazy" decoding="async" alt="A moment from the reception" />
+          <span class="gallery__overlay"><span class="gallery__tag">Reception</span></span>
+        </button>
+        <button class="gallery__card" data-category="reception" data-label="Reception" aria-label="Open photo: A moment from the reception">
+          <img src="images/web/reception/TEJ09366.jpg" width="1600" height="1066" loading="lazy" decoding="async" alt="A moment from the reception" />
+          <span class="gallery__overlay"><span class="gallery__tag">Reception</span></span>
+        </button>
+        <button class="gallery__card" data-category="reception" data-label="Reception" aria-label="Open photo: A moment from the reception">
+          <img src="images/web/reception/TEJ09378.jpg" width="1600" height="1066" loading="lazy" decoding="async" alt="A moment from the reception" />
+          <span class="gallery__overlay"><span class="gallery__tag">Reception</span></span>
+        </button>
       </div>
     </section>
 
@@ -1541,6 +1553,11 @@
       }
       function layout() {
         var n = colCount();
+        // pixel-accurate column widths + gap, so balancing counts the gaps
+        // between stacked cards (otherwise columns with more cards run tall)
+        var gap = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16; // --space-sm = 1rem
+        var colW = (grid.clientWidth - gap * (n - 1)) / n;
+        if (!(colW > 0)) colW = 1;
         var cols = [], h = [];
         for (var i = 0; i < n; i++) {
           var col = document.createElement('div');
@@ -1551,9 +1568,9 @@
           var img = card.querySelector('img');
           var iw = +img.getAttribute('width') || 3, ih = +img.getAttribute('height') || 2;
           var t = 0; // shortest column (ties -> leftmost, keeps reading order tidy)
-          for (var i = 1; i < n; i++) if (h[i] < h[t] - 1e-4) t = i;
+          for (var i = 1; i < n; i++) if (h[i] < h[t] - 0.5) t = i;
           cols[t].appendChild(card);
-          h[t] += ih / iw; // relative height (all columns are equal width)
+          h[t] += (h[t] > 0 ? gap : 0) + colW * (ih / iw); // card height incl. gap
         });
         grid.textContent = '';
         cols.forEach(function (c) { grid.appendChild(c); });
