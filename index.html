@@ -623,8 +623,17 @@
       border: 1px solid rgba(166, 124, 61, 0.5);
       box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.9);
       background: var(--color-surface);
+      transform-origin: center center;
+      transition: transform .25s var(--ease);  /* smooth zoom (reduced-motion shortens this globally) */
+      touch-action: none;                       /* JS owns pinch / drag gestures */
+      will-change: transform;
+      cursor: zoom-in;
     }
+    .lightbox.is-zoomed   .lightbox__img { cursor: grab; }
+    .lightbox.is-grabbing .lightbox__img { cursor: grabbing; transition: none; } /* track finger 1:1 */
+    .lightbox.is-zoomed   .lightbox__caption { opacity: 0; }   /* fade label while zoomed */
     .lightbox__caption {
+      transition: opacity .3s var(--ease);
       display: flex;
       align-items: center;
       gap: var(--space-sm);
@@ -670,6 +679,42 @@
     .lightbox__nav:hover { transform: translateY(-50%) scale(1.08); }
     .lightbox__nav--prev { left: clamp(0.5rem, 3vw, 2rem); }
     .lightbox__nav--next { right: clamp(0.5rem, 3vw, 2rem); }
+
+    /* Zoom controls (top-left) — matches the close/nav button treatment */
+    .lightbox__zoom {
+      position: absolute;
+      z-index: 2;
+      top: clamp(1rem, 3vw, 2rem);
+      left: clamp(0.5rem, 3vw, 2rem);
+      display: flex;
+      gap: 0.5rem;
+    }
+    .lightbox__zoom-btn {
+      display: grid;
+      place-items: center;
+      width: 3rem; height: 3rem;
+      font-size: 1.4rem; line-height: 1;
+      color: var(--color-text);
+      background: rgba(58, 20, 34, 0.6);
+      border: 1px solid rgba(166, 124, 61, 0.5);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background .3s var(--ease), color .3s var(--ease), transform .3s var(--ease);
+    }
+    .lightbox__zoom-btn:hover {
+      background: var(--gold-foil);
+      color: #2A0E12;
+      border-color: transparent;
+      transform: translateY(-2px);
+    }
+    .lightbox__zoom-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+      transform: none;
+      background: rgba(58, 20, 34, 0.6);
+      color: var(--color-text);
+      border-color: rgba(166, 124, 61, 0.5);
+    }
 
     /* ============================================================
        8. THE CELEBRATIONS — vertical ceremony timeline
@@ -1458,6 +1503,10 @@
        ============================================================ -->
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" hidden>
     <button class="lightbox__close" aria-label="Close viewer">&times;</button>
+    <div class="lightbox__zoom">
+      <button class="lightbox__zoom-btn" data-zoom="out" aria-label="Zoom out">&minus;</button>
+      <button class="lightbox__zoom-btn" data-zoom="in" aria-label="Zoom in">+</button>
+    </div>
     <button class="lightbox__nav lightbox__nav--prev" aria-label="Previous photo">&lsaquo;</button>
     <figure class="lightbox__figure">
       <img class="lightbox__img" src="" alt="" />
@@ -1602,7 +1651,7 @@
         });
       });
 
-      /* ---- Lightbox ---- */
+      /* ---- Lightbox (with zoom + pan) ---- */
       var lb = document.getElementById('lightbox');
       var lbImg = lb.querySelector('.lightbox__img');
       var lbLabel = lb.querySelector('.lightbox__label');
@@ -1610,10 +1659,49 @@
       var btnClose = lb.querySelector('.lightbox__close');
       var btnPrev = lb.querySelector('.lightbox__nav--prev');
       var btnNext = lb.querySelector('.lightbox__nav--next');
+      var zoomInBtn = lb.querySelector('[data-zoom="in"]');
+      var zoomOutBtn = lb.querySelector('[data-zoom="out"]');
 
       var visible = [];     // navigable set (respects the active filter)
       var index = 0;
       var lastFocused = null;
+
+      /* ---- Zoom + pan state (1x = fit to screen, up to 4x) ---- */
+      var MIN = 1, MAX = 4;
+      var scale = 1, panX = 0, panY = 0;
+
+      function clampPan() {
+        var maxX = Math.max(0, (scale - 1) * lbImg.offsetWidth / 2);
+        var maxY = Math.max(0, (scale - 1) * lbImg.offsetHeight / 2);
+        panX = Math.min(maxX, Math.max(-maxX, panX));
+        panY = Math.min(maxY, Math.max(-maxY, panY));
+      }
+      function apply() {
+        lbImg.style.transform = 'translate(' + panX.toFixed(1) + 'px,' + panY.toFixed(1) + 'px) scale(' + scale.toFixed(3) + ')';
+        var zoomed = scale > 1.001;
+        lb.classList.toggle('is-zoomed', zoomed);
+        if (zoomOutBtn) zoomOutBtn.disabled = !zoomed;
+        if (zoomInBtn) zoomInBtn.disabled = scale >= MAX - 0.001;
+      }
+      function resetZoom() { scale = 1; panX = 0; panY = 0; apply(); }
+      // zoom toward a screen point (cx,cy), keeping that spot of the photo fixed
+      function zoomTo(next, cx, cy) {
+        next = Math.min(MAX, Math.max(MIN, next));
+        if (Math.abs(next - scale) < 0.0005) return;
+        var r = lbImg.getBoundingClientRect();
+        var layoutCX = r.left + r.width / 2 - panX;   // centre of the photo, untransformed
+        var layoutCY = r.top + r.height / 2 - panY;
+        var ratio = next / scale;
+        panX = (cx - layoutCX) * (1 - ratio) + panX * ratio;
+        panY = (cy - layoutCY) * (1 - ratio) + panY * ratio;
+        scale = next;
+        clampPan();
+        apply();
+      }
+      function zoomByFactor(f) {
+        var r = lbImg.getBoundingClientRect();
+        zoomTo(scale * f, r.left + r.width / 2, r.top + r.height / 2);
+      }
 
       function render() {
         var card = visible[index];
@@ -1627,6 +1715,7 @@
         visible = activeCards();
         index = visible.indexOf(card);
         if (index < 0) index = 0;
+        resetZoom();
         render();
         lb.hidden = false;
         requestAnimationFrame(function () { lb.classList.add('is-open'); });
@@ -1643,6 +1732,7 @@
       function step(dir) {
         if (!visible.length) return;
         index = (index + dir + visible.length) % visible.length;
+        resetZoom();   // every new photo starts fit-to-screen
         render();
       }
 
@@ -1652,13 +1742,85 @@
       btnClose.addEventListener('click', close);
       btnPrev.addEventListener('click', function () { step(-1); });
       btnNext.addEventListener('click', function () { step(1); });
+      zoomInBtn.addEventListener('click', function () { zoomByFactor(1.5); });
+      zoomOutBtn.addEventListener('click', function () { zoomByFactor(1 / 1.5); });
       lb.addEventListener('click', function (e) { if (e.target === lb) close(); }); // backdrop
+
+      // desktop scroll-wheel zoom (toward the cursor)
+      lb.addEventListener('wheel', function (e) {
+        if (lb.hidden) return;
+        e.preventDefault();
+        zoomTo(scale * (e.deltaY < 0 ? 1.2 : 1 / 1.2), e.clientX, e.clientY);
+      }, { passive: false });
+
+      /* ---- Pointer: drag-to-pan + pinch-to-zoom + double-tap ---- */
+      var pts = new Map();
+      var panPrev = null, pinchDist = 0, pinchMid = null;
+      var moved = false, downXY = null, downT = 0, lastTapT = 0, lastTapX = 0, lastTapY = 0;
+      function mid(a, b) { return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }; }
+      function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+
+      lbImg.addEventListener('pointerdown', function (e) {
+        e.preventDefault();
+        lbImg.setPointerCapture(e.pointerId);
+        pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        lb.classList.add('is-grabbing');
+        if (pts.size === 2) {
+          var p = Array.from(pts.values());
+          pinchDist = dist(p[0], p[1]); pinchMid = mid(p[0], p[1]); moved = true;
+        } else {
+          panPrev = { x: e.clientX, y: e.clientY };
+          downXY = { x: e.clientX, y: e.clientY }; downT = Date.now(); moved = false;
+        }
+      });
+      lbImg.addEventListener('pointermove', function (e) {
+        if (!pts.has(e.pointerId)) return;
+        pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        var p = Array.from(pts.values());
+        if (p.length === 2) {                       // pinch zoom + two-finger pan
+          var d = dist(p[0], p[1]), m = mid(p[0], p[1]);
+          if (pinchDist > 0) {
+            zoomTo(scale * (d / pinchDist), m.x, m.y);
+            panX += m.x - pinchMid.x; panY += m.y - pinchMid.y; clampPan(); apply();
+          }
+          pinchDist = d; pinchMid = m; moved = true;
+        } else if (scale > 1) {                     // single-finger / mouse drag pan
+          panX += e.clientX - panPrev.x; panY += e.clientY - panPrev.y;
+          clampPan(); apply();
+          panPrev = { x: e.clientX, y: e.clientY };
+          if (downXY && Math.abs(e.clientX - downXY.x) + Math.abs(e.clientY - downXY.y) > 8) moved = true;
+        } else if (downXY && Math.abs(e.clientX - downXY.x) + Math.abs(e.clientY - downXY.y) > 8) {
+          moved = true;
+        }
+      });
+      function endPointer(e) {
+        if (!pts.has(e.pointerId)) return;
+        pts.delete(e.pointerId);
+        if (pts.size === 1) {                       // one finger lifted after a pinch -> keep panning
+          var p = Array.from(pts.values())[0];
+          panPrev = { x: p.x, y: p.y }; pinchDist = 0; pinchMid = null;
+        } else if (pts.size === 0) {
+          lb.classList.remove('is-grabbing');
+          if (!moved && Date.now() - downT < 300) { // a tap -> check for double-tap
+            var now = Date.now();
+            if (now - lastTapT < 300 && Math.abs(e.clientX - lastTapX) < 30 && Math.abs(e.clientY - lastTapY) < 30) {
+              if (scale > 1.001) resetZoom(); else zoomTo(2.5, e.clientX, e.clientY);
+              lastTapT = 0;
+            } else { lastTapT = now; lastTapX = e.clientX; lastTapY = e.clientY; }
+          }
+        }
+      }
+      lbImg.addEventListener('pointerup', endPointer);
+      lbImg.addEventListener('pointercancel', endPointer);
 
       document.addEventListener('keydown', function (e) {
         if (lb.hidden) return;
         if (e.key === 'Escape') close();
         else if (e.key === 'ArrowLeft') step(-1);
         else if (e.key === 'ArrowRight') step(1);
+        else if (e.key === '+' || e.key === '=') zoomByFactor(1.5);
+        else if (e.key === '-' || e.key === '_') zoomByFactor(1 / 1.5);
+        else if (e.key === '0') resetZoom();
       });
     })();
 
